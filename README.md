@@ -1,16 +1,16 @@
 # uic
 
-## Project setup
+## 安装项目依赖
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### 启动项目开发环境
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 打包项目生成文件
 ```
 npm run build
 ```
