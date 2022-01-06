@@ -1,14 +1,30 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <van-button type="success" @click="message">{{ msg }}</van-button>
   </div>
 </template>
 
 <script>
+import { Button, Toast } from 'vant'
+
+
 export default {
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  components: {
+    [Button.name]: Button,
+    [Toast.name]: Toast
+  },
+  methods: {
+    message(){
+      Toast({
+        message: '自定义图片',
+        icon: 'https://img.yzcdn.cn/vant/logo.png',
+      });
+    }
   }
 }
 </script>
