@@ -7,7 +7,8 @@ const routes = [
     name: 'Home',
     component: Home,
     meta: {
-      title: "首页"
+      title: "首页",
+      content: '首页页面',
     }
   },
   {
@@ -16,15 +17,29 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    meta: {
+      title: "关于",
+      content: '首页页面',
+    }
   },
   {
     path: '/login',
     name: 'Login',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue'),
+    meta: {
+      title: "登录",
+      content: '首页页面',
+    }
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue'),
+    meta: {
+      title: "注册",
+      content: '注册页面',
+    }
   }
 ]
 
