@@ -13,9 +13,8 @@ import VueAxios from 'vue-axios'
 const app = createApp(App)
 /* 挂载全局对象 start */
 
+// 设置封装的网络请求
 app.use(VueAxios, axios)
-// // 设置封装的网络请求
-// app.config.globalProperties.$http = Axios
 
 
 app.use(store).use(router).use(VueWechatTitle).mount('#app')
