@@ -9,7 +9,7 @@ const routes = [
     meta: {
       title: "首页",
       content: '首页页面',
-    }
+    },
   },
   {
     path: '/about',
@@ -49,5 +49,18 @@ const router = createRouter({
   history: createWebHashHistory(process.env.BASE_URL),
   routes,
 })
-
+// 使用 router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
+router.beforeEach((to, from, next) => {
+  if (to.path === '/login') {
+    next()
+  } else {
+    let token = localStorage.getItem('token')
+    console.log(token)
+    if (token === 'null' || token === '') {
+      next('/login')
+    } else {
+      next()
+    }
+  }
+})
 export default router

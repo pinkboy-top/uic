@@ -75,8 +75,8 @@ export default {
                 message: '登录成功',
                 icon: 'like-o',
               });
-              // 保存token
-              // localStorage.setItem('token',resp.data.token);
+              // 登录成功保存token
+              localStorage.setItem('token',resp.data.data.token);
               setTimeout(this.router_home, 3000);
             } else if (resp.data.code == -10){
                 Toast({
