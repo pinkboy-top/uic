@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
+import Home from '../views/Home.vue';
 
 const routes = [
   {
@@ -7,20 +7,45 @@ const routes = [
     name: 'Home',
     component: Home,
     meta: {
-      title: "首页",
-      content: '首页页面',
+      title: "动态",
+      content: '动态页面',
+      requireAuth: true
     },
   },
   {
-    path: '/about',
-    name: 'About',
+    path: '/msg',
+    name: 'Msg',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Msg.vue'),
+    meta: {
+      title: "消息中心",
+      content: '消息页面',
+      requireAuth: true
+    },
+  },
+  {
+    path: '/friend',
+    name: 'Friend',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    component: () => import(/* webpackChunkName: "about" */ '../views/Friend.vue'),
     meta: {
-      title: "关于",
-      content: '首页页面',
+      title: "好友中心",
+      content: '好友详情页面',
+      requireAuth: true
+    }
+  },
+  {
+    path: '/user',
+    name: 'User',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/User.vue'),
+    meta: {
+      title: "用户中心",
+      content: '用户详情页面',
+      requireAuth: true
     }
   },
   {
@@ -48,19 +73,23 @@ const router = createRouter({
   // 路由模式换成本地模式,不然打包后打开index会找不到路径
   history: createWebHashHistory(process.env.BASE_URL),
   routes,
-})
+});
 // 使用 router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
 router.beforeEach((to, from, next) => {
-  if (to.path === '/login') {
-    next()
-  } else {
-    let token = localStorage.getItem('token')
-    console.log(token)
-    if (token === 'null' || token === '') {
-      next('/login')
+  if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
+    if (localStorage.token) {  // 获取当前的token是否存在
+      // console.log("token存在")
+      next();
     } else {
-      next()
+      // console.log("token不存在")
+      next({
+        path: '/login', // 将跳转的路由path作为参数，登录成功后跳转到该路由
+        query: {redirect: to.fullPath}
+      });
     }
   }
-})
+  else { // 如果不需要权限校验，直接进入路由界面
+    next();
+  }
+});
 export default router

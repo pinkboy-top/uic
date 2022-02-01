@@ -62,40 +62,31 @@ export default {
     },
     methods: {
         router_registered(){
-            this.$router.push('register')
+            this.$router.push('register');
         },
         router_home(){
-            this.$router.push('/')
+            this.$router.push('/');
         },
-        onSubmit(values) {
+        onSubmit(values){
             this.axios.post('/user/login', values)
         .then(resp => {
             if (resp.data.code == 200){
                 Toast({
-                message: '登录成功',
-                icon: 'like-o',
-              });
+                    message: '登录成功',
+                    icon: 'like-o',
+                });
               // 登录成功保存token
               localStorage.setItem('token',resp.data.data.token);
               setTimeout(this.router_home, 3000);
             } else if (resp.data.code == -10){
-                Toast({
-                message: resp.data.msg,
-                icon: 'like-o',
-              })
+                Toast.fail(resp.data.msg);
             } else if (resp.data.code == -5){
-                Toast({
-                message: resp.data.msg,
-                icon: 'like-o',
-              });
-              setTimeout(this.router_registered, 3000);
+                Toast.fail(resp.data.msg);
+                setTimeout(this.router_registered, 3000);
             }
             console.log(resp);
         }).catch(err => {
-            Toast({
-                message: '发生错误!',
-                icon: 'like-o',
-              });
+            Toast.fail('发生错误!');
             console.log(err);
         })
         console.log('data', values);
