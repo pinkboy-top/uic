@@ -1,6 +1,5 @@
 <template>
     <div class="msg">
-        <h1>This is an msg page</h1>
         <van-empty image="error" description="啥也没有" />
         <Tabbar/>
   </div>

@@ -131,6 +131,7 @@ import activeIcon from '../assets/male_active.png'
 import inactiveIcon from '../assets/female_active.png'
 import activeIcons from '../assets/male.png'
 import inactiveIcons from '../assets/female.png'
+import logo from '../assets/logo.png'
 
 
 export default {
@@ -155,6 +156,7 @@ export default {
             inactiveIcon: inactiveIcon,
             activeIcons: activeIcons,
             inactiveIcons: inactiveIcons,
+            logo
         };
     },
     // 引入的vant组件
@@ -249,7 +251,8 @@ export default {
     #login_img {
         margin-top: 10px;
         margin-bottom: 10px;
-  }
+        text-align: center;
+}
   .img-icon {
     height: 20px;
 }

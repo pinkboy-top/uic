@@ -96,8 +96,11 @@ export default {
 </script>
 
 <style scoped>
-    #login_img {
+#login_img {
         margin-top: 20px;
         margin-bottom: 10px;
+}
+#login {
+        text-align: center;
 }
 </style>
