@@ -2,9 +2,9 @@
     <div id="registered">
         <div id="login_img"><van-image
             round
-            width="5rem"
-            height="5rem"
-            src="https://img.yzcdn.cn/vant/logo.png"/>
+            width="8rem"
+            height="4rem"
+            :src="require('../assets/logo.png')" />
         </div>
         <van-form @submit="onSubmit">
         <!-- 通过 pattern 进行正则校验 -->

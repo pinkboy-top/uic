@@ -1,10 +1,11 @@
 <template>
     <div id="login">
-        <div id="login_img"><van-image
+        <div id="login_img">
+            <van-image
             round
-            width="7rem"
-            height="7rem"
-            src="https://img.yzcdn.cn/vant/logo.png"/>
+            width="8rem"
+            height="4rem"
+            :src="require('../assets/logo.png')" />
         </div>
         <van-form @submit="onSubmit">
           <van-field
@@ -46,7 +47,7 @@ export default {
     data() {
         return {
           account: '',
-          password: '',
+          password: ''
       };
     },
     // 引入的vant组件

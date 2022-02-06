@@ -8,7 +8,7 @@ headers: {
     'Content-Type': 'application/json'
   }, 
     timeout: 60000, // 超时
-    baseURL: 'http://192.168.6.192/api/v1' // 请求接口地址，这里使用本项目地址，因为我们是前后端分离，后面需要在vue.config.js里面配置代理，实际请求得地址不是这个。
+    baseURL: 'http://43.154.56.14:8080/api/v1' // 请求接口地址，这里使用本项目地址，因为我们是前后端分离，后面需要在vue.config.js里面配置代理，实际请求得地址不是这个。
 });
 
 
