@@ -105,6 +105,7 @@ export default {
                 Toast.fail(resp.data.msg);
             } else if (resp.data.code == -5){
                 Toast.fail(resp.data.msg);
+                // 重定向到登录
                 this.redirect_login();
             }
         }).catch(err => {

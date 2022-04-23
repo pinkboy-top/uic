@@ -25,13 +25,22 @@ const routes = [
   {
     path: '/friend',
     name: 'Friend',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
+
     component: () => import(/* webpackChunkName: "about" */ '../views/Friend.vue'),
     meta: {
       title: "好友中心",
       content: '好友详情页面',
+      requireAuth: true
+    }
+  },
+  {
+    path: '/addfriend',
+    name: 'AddFriend',
+
+    component: () => import(/* webpackChunkName: "about" */ '../views/AddFriend.vue'),
+    meta: {
+      title: "添加好友",
+      content: '添加好友页面',
       requireAuth: true
     }
   },
