@@ -179,7 +179,7 @@ export default {
             this.$router.push('login')
         },
         onSubmit(values) {
-            console.log(values)
+            // console.log(values)
             this.axios.post('/user/register', values)
             .then(resp => {
                 if (resp.data.code == 200){

@@ -62,7 +62,7 @@ export default {
     },
 
     data()  {
-      return{
+      return {
             list: [],
             friend: '',
             account: ''
@@ -75,9 +75,9 @@ export default {
         .then(resp => {
             if (resp.data.code == 200){
                 this.friend = [resp.data.data];
-            }else if (resp.data.code == 100){
+            } else if (resp.data.code == 100){
                 Toast.fail(resp.data.msg);
-            }else if (resp.data.code == -5){
+            } else if (resp.data.code == -5){
                 Toast.fail(resp.data.msg);
                 // 重定向到登录
                 this.redirect_login();
@@ -93,9 +93,9 @@ export default {
         .then(resp => {
             if (resp.data.code == 200){
                 Toast.fail(resp.data.msg);
-            }else if (resp.data.code == 100){
+            } else if (resp.data.code == 100){
                 Toast.fail(resp.data.msg);
-            }else if (resp.data.code == -5){
+            } else if (resp.data.code == -5){
                 Toast.fail(resp.data.msg);
                 // 重定向到登录
                 this.redirect_login();
@@ -116,9 +116,9 @@ export default {
         .then(resp => {
             if (resp.data.code == 200){
                 Toast.fail(resp.data.msg);
-            }else if (resp.data.code == 100){
+            } else if (resp.data.code == 100){
                 Toast.fail(resp.data.msg);
-            }else if (resp.data.code == -5){
+            } else if (resp.data.code == -5){
                 Toast.fail(resp.data.msg);
                 // 重定向到登录
                 this.redirect_login();
@@ -137,9 +137,9 @@ export default {
         .then(resp => {
             if (resp.data.code == 200){
                 Toast.fail(resp.data.msg);
-            }else if (resp.data.code == 100){
+            } else if (resp.data.code == 100){
                 Toast.fail(resp.data.msg);
-            }else if (resp.data.code == -5){
+            } else if (resp.data.code == -5){
                 Toast.fail(resp.data.msg);
                 // 重定向到登录
                 this.redirect_login();
@@ -156,9 +156,9 @@ export default {
         .then(resp => {
             if (resp.data.code == 200){
                 this.list = resp.data.data
-            }else if (resp.data.code == -10){
+            } else if (resp.data.code == -10){
                 Toast.fail(resp.data.msg);
-            }else if (resp.data.code == -5){
+            } else if (resp.data.code == -5){
                 Toast.fail(resp.data.msg);
                 // 重定向到登录
                 this.redirect_login();

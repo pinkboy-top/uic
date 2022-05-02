@@ -8,7 +8,17 @@ const routes = [
     component: Home,
     meta: {
       title: "动态",
-      content: '动态页面',
+      content: '动态首页',
+      requireAuth: true
+    },
+  },
+  {
+    path: '/addnews',
+    name: 'AddNews',
+    component: () => import(/* webpackChunkName: "about" */ '../views/AddNews.vue'),
+    meta: {
+      title: "发布动态",
+      content: '发布动态',
       requireAuth: true
     },
   },
