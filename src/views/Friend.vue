@@ -55,17 +55,6 @@ export default {
       .then(resp => {
           if (resp.data.code == 200){
             this.list = resp.data.data
-              // this.avatar = resp.data.data.avatar
-              // this.account = resp.data.data.account
-              // this.nickname = resp.data.data.nickname
-              // this.summary = resp.data.data.summary
-              // this.gender = resp.data.data.gender
-              // this.birthday = resp.data.data.birthday
-              // this.create_date = resp.data.data.create_date
-              // Toast({
-              //     message: resp.data.msg,
-              //     icon: 'like-o',
-              // });
             this.loading = false
           } else if (resp.data.code == 100){
               Toast.fail("没有好友,快去添加好友吧");
