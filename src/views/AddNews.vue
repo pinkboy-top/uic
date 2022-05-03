@@ -119,7 +119,7 @@ export default {
                     .then(resp => {
                         if (resp.data.code == 200){
                             Toast.fail(resp.data.msg);
-                            console.log(params)
+                            this.$router.push('/')
                         } else if (resp.data.code == 100){
                             Toast.fail("没有好友,快去添加好友吧");
                         } else if (resp.data.code == -99){
@@ -127,7 +127,7 @@ export default {
                         } else if (resp.data.code == -5){
                             Toast.fail(resp.data.msg);
                             // 重定向到登录
-                            this.redirect_login();
+                            this.$router.push('login');
                         }
                     }).catch(err => {
                         Toast.fail('发生错误!');
@@ -135,15 +135,12 @@ export default {
                     });
              }
           } else{
-              if (this.title == ''){
-                  Toast.fail('发点东西吧!');
-              } else{
-                let params = { "title": this.title, "files": this.files, "friend_view_list":  this.checked};
+              let params = { "title": this.title, "files": this.files, "friend_view_list":  this.checked};
                 this.axios.post('/user/post_news', params)
                     .then(resp => {
                         if (resp.data.code == 200){
                             Toast.fail(resp.data.msg);
-                            console.log(params)
+                            this.$router.push('/')
                         } else if (resp.data.code == 100){
                             Toast.fail("没有好友,快去添加好友吧");
                         } else if (resp.data.code == -99){
@@ -151,14 +148,12 @@ export default {
                         } else if (resp.data.code == -5){
                             Toast.fail(resp.data.msg);
                             // 重定向到登录
-                            this.redirect_login();
+                            this.$router.push('login')
                         }
                     }).catch(err => {
                         Toast.fail('发生错误!');
                         console.log(params);
                     });
-             }
-
           }
       },
       onConfirm() {
@@ -172,7 +167,7 @@ export default {
                 } else if (resp.data.code == -5){
                     Toast.fail(resp.data.msg);
                     // 重定向到登录
-                    this.redirect_login();
+                    this.$router.push('login');
                 }
             }).catch(err => {
                 Toast.fail('发生错误!');
