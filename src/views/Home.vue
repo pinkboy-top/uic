@@ -6,13 +6,31 @@
     <div class="tip">
       <span>动态列表</span>
     </div>
-    <div class="item" v-for="item in news" :key="item.pk">
-      <img class="face" :src="item.avatar">
-      <div class="des">
-        <div class="nickName"><span>{{item.title}}</span></div>
-        <div class="signature"><span>{{item.nickname}}</span></div>
+
+    <div v-for="item in news" :key="item.pk">
+      <div class="item">
+        <img class="face" :src="item.avatar">
+        <div class="des">
+          <div class="nickName"><span>{{item.nickname}}</span></div>
+          <div class="signature"><span>{{item.title}}</span></div>
+        </div>
       </div>
+
+      <div class="img-box" v-for="url in item.files" :key="url">
+        <van-image
+          width="150"
+          height="150"
+          :src="url"
+          fit="cover"
+        />
+      </div>
+
+      <div class="post-date">
+          <div class="signature"><span>发布于:{{item.create_date}}</span></div>
+      </div>
+
     </div>
+
 
     <van-skeleton title avatar :row="3" :loading="loading"/>
     <Tabbar/>
@@ -22,7 +40,7 @@
 <script>
 // @ is an alias to /src
 import Tabbar from '@/components/Tabbar.vue'
-import { Toast, Empty, Skeleton, Cell } from 'vant';
+import { Toast, Empty, Skeleton, Cell, Image as VanImage, Tag } from 'vant';
 
 export default {
   name: 'Home',
@@ -30,7 +48,10 @@ export default {
     Tabbar,
     [Empty.name]: Empty,
     [Skeleton.name]: Skeleton,
-    [Cell.name]: Cell
+    [Cell.name]: Cell,
+    [Toast.name]: Toast,
+    [VanImage.name]: VanImage,
+    [Tag.name]: Tag
   },
 
   data() {
@@ -75,7 +96,7 @@ export default {
       }
       .item{
 		  width: 100%;
-		  height: 60px;
+		  height: 15%;
 		  box-sizing: border-box;
 		  border-bottom: 1px solid #eee;
 		  background-color: #fff;
@@ -112,7 +133,7 @@ export default {
 		  overflow:hidden;
 		}
 		.signature{
-		  /*height: 30px;*/
+		  height: 30px;
 		  margin-top: -5px;
 		}
 		.signature span{
@@ -145,5 +166,23 @@ export default {
       font-size: 16px;
       line-height: inherit;
     }
+    /* .div-box {
+      margin-bottom: 50px;
+    } */
+    .img-box {
+      /* width: 100%;
+      height: 25%; */
+      margin-left: 10px;
+      float: left;
+    }
+
+    .post-date {
+		  width: 100%;
+		  height: 15%;
+      margin-left: 10px;
+      /* margin-top: 5px; */
+		  display: flex;
+		}
+    
 
 </style>

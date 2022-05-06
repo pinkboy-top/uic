@@ -34,6 +34,7 @@ export default {
   components: {
     Tabbar,
     [Empty.name]: Empty,
+    [Toast.name]: Toast,
     [Search.name]: Search,
     [Skeleton.name]: Skeleton,
     [Cell.name]: Cell,

@@ -58,7 +58,8 @@ export default {
     name: 'AddFriend',
     components: {
         [Search.name]: Search,
-        [Button.name]: Button
+        [Button.name]: Button,
+        [Toast.name]: Toast
     },
 
     data()  {
