@@ -16,13 +16,17 @@
         </div>
       </div>
 
-      <div class="img-box" v-for="url in item.files" :key="url">
+      <!-- <div class="img-box" v-for="url in item.files" :key="url">
         <van-image
           width="150"
           height="150"
           :src="url"
           fit="cover"
         />
+      </div> -->
+
+      <div v-viewer>
+        <img class="img-box" v-for="src in item.files" :key="src" :src="src">
       </div>
 
       <div class="post-date">
@@ -170,19 +174,19 @@ export default {
       margin-bottom: 50px;
     } */
     .img-box {
-      /* width: 100%;
-      height: 25%; */
+      width: 45%;
       margin-left: 10px;
+      margin-bottom: 2px;
       float: left;
     }
 
     .post-date {
 		  width: 100%;
-		  height: 15%;
       margin-left: 10px;
-      /* margin-top: 5px; */
+      /* margin-top: 2px; */
 		  display: flex;
 		}
+
     
 
 </style>
