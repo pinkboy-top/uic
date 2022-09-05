@@ -15,7 +15,7 @@
             <span>搜索列表</span>
             </div>
             <div class="item" v-for="item in friend" :key="item.uid">
-                <img class="face" :src="item.avatar">
+                <img class="face" :src="imgUrl.imgUrl + item.avatar">
                 <div class="des">
                     <div class="nickName"><span>{{item.nick_name}}</span></div>
                     <div class="signature"><span>{{item.summary}}</span></div>
@@ -31,7 +31,7 @@
         <span>好友请求列表</span>
         </div>
         <div class="item" v-for="item in list" :key="item.uid">
-            <img class="face" :src="item.avatar">
+            <img class="face" :src="imgUrl.imgUrl + item.avatar">
             <div class="des">
                 <div class="nickName"><span>{{item.nick_name}}</span></div>
                 <div class="signature"><span>{{item.summary}}</span></div>
@@ -51,6 +51,7 @@
 
 <script>
 import { Toast, Button, Search, Skeleton, Cell, Image as VanImage } from 'vant';
+import imgUrl from '@/global';
 
 
 export default {
@@ -66,7 +67,8 @@ export default {
       return {
             list: [],
             friend: '',
-            account: ''
+            account: '',
+            imgUrl
         }
     },
     methods: {

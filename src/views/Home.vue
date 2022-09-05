@@ -9,7 +9,7 @@
 
     <div v-for="item in news" :key="item.pk">
       <div class="item">
-        <img class="face" :src="item.avatar">
+        <img class="face" :src="imgUrl.imgUrl + item.avatar">
         <div class="des">
           <div class="nickName"><span>{{item.nickname}}</span></div>
           <div class="signature"><span>{{item.title}}</span></div>
@@ -26,7 +26,7 @@
       </div> -->
 
       <div v-viewer>
-        <img class="img-box" v-for="src in item.files" :key="src" :src="src">
+        <img class="img-box" v-for="src in item.files" :key="src" :src="imgUrl.imgUrl + src">
       </div>
 
       <div class="post-date">
@@ -44,6 +44,7 @@
 <script>
 // @ is an alias to /src
 import Tabbar from '@/components/Tabbar.vue'
+import imgUrl from '@/global';
 import { Toast, Empty, Skeleton, Cell, Image as VanImage, Tag } from 'vant';
 
 export default {
@@ -61,12 +62,14 @@ export default {
   data() {
     return{
       news: [],
-      loading: ''
+      loading: '',
+      imgUrl
     }
   },
 
   // 获取所有的动态
   created() {
+    console.log(imgUrl.imgUrl)
     this.axios.post('/user/get_news')
       .then(resp => {
           if (resp.data.code == 200){

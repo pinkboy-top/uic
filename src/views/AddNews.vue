@@ -42,7 +42,7 @@
                         </div>
                         
                         <div class="item" v-for="(item, index) in friends" :key="item.uid">
-                            <img class="face" :src="item.avatar">
+                            <img class="face" :src="imgUrl.imgUrl + item.avatar">
                             <div class="des" @click="toggle(index)">
                                 <div class="nickName"><span>{{item.nick_name}}</span></div>
                                 <div class="signature"><span>{{item.summary}}</span></div>
@@ -75,6 +75,7 @@
 
 <script>
 import { ref } from 'vue';
+import imgUrl from '@/global';
 import { Toast, Button, CellGroup , Cell, Form, Field, Uploader, Picker, Popup, Checkbox, CheckboxGroup } from 'vant';
 
 
@@ -103,7 +104,8 @@ export default {
           showPicker: false,
           checked: [],
           friends: [],
-          checkboxRefs: []
+          checkboxRefs: [],
+          imgUrl
       }
   },
 

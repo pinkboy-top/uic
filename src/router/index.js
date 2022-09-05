@@ -23,6 +23,16 @@ const routes = [
     },
   },
   {
+    path: '/msglist',
+    name: 'MsgList',
+    component: () => import(/* webpackChunkName: "about" */ '../views/MsgList.vue'),
+    meta: {
+      title: "消息列表",
+      content: '消息列表',
+      requireAuth: true
+    },
+  },
+  {
     path: '/msg',
     name: 'Msg',
     component: () => import(/* webpackChunkName: "about" */ '../views/Msg.vue'),

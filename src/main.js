@@ -10,6 +10,9 @@ import VueAxios from 'vue-axios';
 // 新增图片预览库
 import 'viewerjs/dist/viewer.css';
 import VueViewer from 'v-viewer';
+// 使用websocket
+import VueNativeSock from "vue-native-websocket-vue3"
+import { ConfigProvider } from 'vant';
 
 
 // 创建vueApp对象
@@ -22,5 +25,20 @@ app.use(VueAxios, axios);
 // 图片预览
 app.use(VueViewer);
 
+app.use(ConfigProvider);
+
+// 连接websocket
+app.use(VueNativeSock,
+    "ws://127.0.0.1:6868/uid=666",
+    {
+      // 数据发送/接收使用使用json
+      format: "json",
+      // 开启自动重连
+      reconnection: true,
+      // 尝试重连的次数
+      reconnectionAttempts: 5,
+      // 重连间隔时间
+      reconnectionDelay: 3000
+    });
 
 app.use(store).use(router).use(VueWechatTitle).mount('#app');

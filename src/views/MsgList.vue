@@ -1,20 +1,23 @@
 <template>
     <div class="friend">
         
-        <van-cell title="新的朋友" icon="friends-o" is-link to="addfriend">
-          <p style="margin-top: 0px; color: red" v-if="msg === 'security' ">新好友请求!</p>
+        <van-cell title="聊天列表" icon="chat-o">
+            <!-- 使用 right-icon 插槽来自定义右侧图标 -->
+            <template #right-icon>
+                <van-icon name="search" class="search-icon" />
+            </template>
         </van-cell>
 
         <van-skeleton avatar :row="3" :round='true' :loading="loading" />
 
         <div class="tip">
-          <span>好友列表</span>
+          <span>消息列表</span>
         </div>
-        <div class="item" v-for="item in list" :key="item.uid">
-          <img class="face" :src="imgUrl.imgUrl + item.avatar">
+        <div class="item" v-for="item in list" :key="item.chat_id" @click="onTochat(item.chat_id)">
+          <img class="face" :src="imgUrl.imgUrl + item.accept_user_avatar">
           <div class="des">
-            <div class="nickName"><span>{{item.nick_name}}</span></div>
-            <div class="signature"><span>{{item.summary}}</span></div>
+            <div class="nickName"><span>{{item.accept_user_nick_name}}</span></div>
+            <div class="signature"><span>{{item.accept_user_account}}</span></div>
           </div>
         </div>
 
@@ -31,8 +34,8 @@ import imgUrl from '@/global';
 
 export default {
 
-  name: 'Friend',
-  components: {
+    name: 'Friend',
+    components: {
     Tabbar,
     [Empty.name]: Empty,
     [Toast.name]: Toast,
@@ -41,53 +44,61 @@ export default {
     [Cell.name]: Cell,
     [VanImage.name]: VanImage,
     [Icon.name]: Icon
-  },
+    },
 
-  data() {
-      return{
-          list: [],
-          loading: '',
-          msg: false,
-          imgUrl
-      }
-  },
+    data() {
+        return {
+            list: [],
+            loading: '',
+            msg: false,
+            imgUrl
+        }
+    },
 
-  // 获取好友列表和好友请求
-  created() {
-    this.axios.post('/user/get_friend_list')
-      .then(resp => {
-          if (resp.data.code == 200){
+    methods: {
+
+        // 打开对应的聊天
+        onTochat(chat_id) {
+            this.$router.push('/msg/?chat_id=' + chat_id);
+        }
+    },
+
+    // 获取好友列表和好友请求
+    created() {
+    this.axios.post('/user/get_msg_list')
+        .then(resp => {
+            if (resp.data.code == 200){
             this.list = resp.data.data
             this.loading = false
-          } else if (resp.data.code == 100){
-              Toast.fail("没有好友,快去添加好友吧");
-          } else if (resp.data.code == -5){
-              Toast.fail(resp.data.msg);
-              // 重定向到登录
-              this.redirect_login();
-          }
-      }).catch(err => {
-          Toast.fail('发生错误!');
-          console.log(err);
-    });
-    // 获取好友请求
-    this.axios.post('user/get_friend_request')
-      .then(resp => {
-            if (resp.data.code == 200){
-                this.msg = resp.data.msg
-            } else if (resp.data.code == -10){
-                // Toast.fail(resp.data.msg);
-                this.msg = false
+            } else if (resp.data.code == 100){
+                Toast.fail("没有聊天");
             } else if (resp.data.code == -5){
                 Toast.fail(resp.data.msg);
                 // 重定向到登录
                 this.redirect_login();
             }
-      }).catch(err => {
-          Toast.fail('发生错误!');
-          console.log(err);
+        }).catch(err => {
+            Toast.fail('发生错误!');
+            console.log(err);
     });
-  }
+    // 获取好友请求
+    // this.axios.post('user/get_friend_request')
+    //   .then(resp => {
+    //         if (resp.data.code == 200){
+    //             this.msg = resp.data.msg
+    //         } else if (resp.data.code == -10){
+    //             // Toast.fail(resp.data.msg);
+    //             this.msg = false
+    //         } else if (resp.data.code == -5){
+    //             Toast.fail(resp.data.msg);
+    //             // 重定向到登录
+    //             this.redirect_login();
+    //         }
+    //   }).catch(err => {
+    //       Toast.fail('发生错误!');
+    //       console.log(err);
+    // });
+    }
 }
 </script>
 
@@ -175,4 +186,14 @@ export default {
       line-height: inherit;
     }
 
+
+    .custom-title {
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  .search-icon {
+    font-size: 30px;
+    line-height: inherit;
+  }
 </style>

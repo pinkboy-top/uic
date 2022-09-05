@@ -54,6 +54,7 @@
 
 <script>
 import Tabbar from '@/components/Tabbar.vue';
+import imgUrl from '@/global';
 import { Toast, Empty, Cell, CellGroup, Image, Col, Row, Field } from 'vant';
 
 
@@ -69,28 +70,28 @@ export default {
             create_date: ''
         }
     },
-  name: 'User',
-  components: {
-    Tabbar,
-    [Toast.name]: Toast,
-    [Empty.name]: Empty,
-    [Cell.name]: Cell,
-    [Image.name]: Image,
-    [CellGroup.name]: CellGroup,
-    [Field.name]: Field,
-    [Col.name]: Col,
-    [Row.name]: Row
-  },
-  methods: {
-      redirect_login() {
-            this.$router.push('login');
+    name: 'User',
+    components: {
+        Tabbar,
+        [Toast.name]: Toast,
+        [Empty.name]: Empty,
+        [Cell.name]: Cell,
+        [Image.name]: Image,
+        [CellGroup.name]: CellGroup,
+        [Field.name]: Field,
+        [Col.name]: Col,
+        [Row.name]: Row
     },
-  },
-  created(){
-      this.axios.post('/user/user_info')
+    methods: {
+        redirect_login() {
+            this.$router.push('login');
+        },
+    },
+    created(){
+        this.axios.post('/user/user_info')
         .then(resp => {
             if (resp.data.code == 200){
-                this.avatar = resp.data.data.avatar
+                this.avatar = imgUrl.imgUrl + resp.data.data.avatar
                 this.account = resp.data.data.account
                 this.nickname = resp.data.data.nickname
                 this.summary = resp.data.data.summary
