@@ -78,6 +78,7 @@ export default {
                 });
               // 登录成功保存token
               localStorage.setItem('token',resp.data.data.token);
+              
               setTimeout(this.router_home, 3000);
             } else if (resp.data.code == -10){
                 Toast.fail(resp.data.msg);

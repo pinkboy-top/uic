@@ -21,6 +21,7 @@ const app = createApp(App);
 
 // 设置封装的网络请求
 app.use(VueAxios, axios);
+app.provide('axios', app.config.globalProperties.axios);
 
 // 图片预览
 app.use(VueViewer);
@@ -28,8 +29,9 @@ app.use(VueViewer);
 app.use(ConfigProvider);
 
 // 连接websocket
-app.use(VueNativeSock,
-    "ws://127.0.0.1:6868/uid=666",
+if (localStorage.token) {
+  app.use(VueNativeSock,
+    "ws://127.0.0.1:6868/token=" + localStorage.getItem('token'),
     {
       // 数据发送/接收使用使用json
       format: "json",
@@ -40,5 +42,6 @@ app.use(VueNativeSock,
       // 重连间隔时间
       reconnectionDelay: 3000
     });
+}
 
 app.use(store).use(router).use(VueWechatTitle).mount('#app');

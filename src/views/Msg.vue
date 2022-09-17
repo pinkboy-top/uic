@@ -2,6 +2,7 @@
   <div class="msg_info">
 
     <van-cell center title="返回" icon="close" is-link to="/msglist" value="返回" />
+    <img style="width:4rm; height:4rm; border-radius:50%;" :src="send_user_avatar">
 
     <van-form @submit="onSubmit">
 
@@ -16,7 +17,7 @@
             <!-- Left -->
             <div class="sender">
               <div>
-                <img style="width:4rm; height:4rm; border-radius:50%;" src="@/assets/avatar.png">
+                <img style="width:4rm; height:4rm; border-radius:50%;" :src="accept_user_avatar">
               </div>
             <div>
               <div class="left_triangle"></div>
@@ -29,10 +30,11 @@
             <!-- Right -->
             <div class="receiver">
             <div>
-                <img style="width:4rm; height:4rm; border-radius:50%;" src="https://i.loli.net/2020/09/20/RadofFlH9Jq8OAp.jpg">
+                <img style="width:4rm; height:4rm; border-radius:50%;" :src="send_user_avatar">
             </div>
             <div>
                 <div class="right_triangle"></div>
+                <span>{{send_user_avatar}}</span>
                 <span> {{item.m}}</span>
             </div>
             </div>
@@ -68,6 +70,8 @@
 import { ref, getCurrentInstance } from 'vue';
 import { Form, Field, CellGroup, Cell, Toast, List, Button, Icon} from 'vant';
 import { useRoute } from "vue-router";
+import imgUrl from '@/global';
+import { inject } from 'vue';
 
 
 export default {
@@ -89,6 +93,12 @@ export default {
     const loading = ref(false);
     const finished = ref(false);
     const route = useRoute();
+    let send_user = ref('');
+    let to_user = ref('');
+    let send_user_avatar = ref('');
+    let accept_user_avatar = ref('');
+    let chat_id = ref('');
+    const axios = inject('axios');
 
     // 在组建中使用必须获取所有实例注册到全局组件中
     const wss = getCurrentInstance();
@@ -121,15 +131,35 @@ export default {
       // setTimeout 仅做示例，真实场景中一般为 ajax 请求
       setTimeout(() => {
 
-        list.value.push({"left": true, "m": "欢迎使用在线聊天"});
-        console.log(route.query)
-
+        // list.value.push({"left": true, "m": "欢迎使用在线聊天"});
         // 加载状态结束
         loading.value = false;
 
         // 数据全部加载完成
         finished.value = true;
-        wss.proxy.$socket.sendObj({'login': true, 'send_user': '666'});
+
+        // 获取聊天详情
+        axios.post('/user/get_chat_info', route.query).then(resp => {
+          if (resp.data.code == 200){
+
+            // 将需要的信息赋值
+            chat_id = route.query.chat_id;
+            send_user = resp.data.data[0].send_user_account;
+            to_user = resp.data.data[0].accept_user_account;
+            send_user_avatar = imgUrl.imgUrl + resp.data.data[0].send_user_avatar;
+            accept_user_avatar = imgUrl.imgUrl + resp.data.data[0].accept_user_avatar;
+
+          }else if (resp.data.code == -5){
+            Toast.fail(resp.data.msg);
+            // 重定向到登录
+            this.redirect_login();
+          }
+        }).catch(err => {
+            Toast.fail('发生错误!');
+            console.log(err);
+        });
+
+        wss.proxy.$socket.sendObj({'open_page': true, 'send_user': send_user});
         // 获取服务器返回的数据
         wss.proxy.$socket.onmessage = (res) => {
           console.log(res.data)
@@ -146,7 +176,7 @@ export default {
 
     const postData = (values) => {
         // 发送数据到服务器
-        wss.proxy.$socket.sendObj({'msg': values, 'to_user': '888', 'send_user': '666'});
+        wss.proxy.$socket.sendObj({'msg': values, 'to_user': to_user, 'send_user': send_user, 'chat_id': chat_id});
 
         // 获取服务器返回的数据
         wss.proxy.$socket.onmessage = (res) => {
@@ -163,7 +193,7 @@ export default {
 
     // 页面关闭的时候发送关闭链接
     window.onunload=function(){
-      wss.proxy.$socket.sendObj({'exit': true, 'send_user': '666'});
+      wss.proxy.$socket.sendObj({'exit_page': true, 'send_user': send_user});
     };
 
 
@@ -175,7 +205,14 @@ export default {
       loading,
       finished,
       wss,
-      postData
+      postData,
+      chat_id,
+      send_user,
+      to_user,
+      send_user_avatar,
+      accept_user_avatar,
+      imgUrl,
+      axios
     };
   },
 };
