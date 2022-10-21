@@ -2,7 +2,6 @@
   <div class="msg_info">
 
     <van-cell center title="返回" icon="close" is-link to="/msglist" value="返回" />
-    <img style="width:4rm; height:4rm; border-radius:50%;" :src="send_user_avatar">
 
     <van-form @submit="onSubmit">
 
@@ -17,7 +16,8 @@
             <!-- Left -->
             <div class="sender">
               <div>
-                <img style="width:4rm; height:4rm; border-radius:50%;" :src="accept_user_avatar">
+                <img style="width:4rm; height:4rm; border-radius:50%;" :src="accept_user_avatar" v-if="item.bind_user_uid ==uid">
+                <img style="width:4rm; height:4rm; border-radius:50%;" :src="send_user_avatar" v-if="item.bind_user_uid == uid">
               </div>
             <div>
               <div class="left_triangle"></div>
@@ -30,12 +30,13 @@
             <!-- Right -->
             <div class="receiver">
             <div>
-                <img style="width:4rm; height:4rm; border-radius:50%;" :src="send_user_avatar">
+                <img style="width:4rm; height:4rm; border-radius:50%;" :src="item.bind_user_avatar" v-if="item.bind_user_uid ==uid">
+                <img style="width:4rm; height:4rm; border-radius:50%;" :src="item.bind_user_avatar" v-if="item.bind_user_uid == uid">
+                <img style="width:4rm; height:4rm; border-radius:50%;" :src="imgUrl.imgUrl + item.bind_user_avatar">
             </div>
             <div>
                 <div class="right_triangle"></div>
-                <span>{{send_user_avatar}}</span>
-                <span> {{item.m}}</span>
+                <span>{{item.m}}</span>
             </div>
             </div>
           </div>
@@ -93,11 +94,16 @@ export default {
     const loading = ref(false);
     const finished = ref(false);
     const route = useRoute();
+    let send_user_account = ref('');
+    let accept_user_account = ref('');
     let send_user = ref('');
-    let to_user = ref('');
+    let accept_user = ref('');
+    let to_user_account = ref('');
+    let post_user_avatar = ref('');
     let send_user_avatar = ref('');
     let accept_user_avatar = ref('');
     let chat_id = ref('');
+    let uid = ref('');
     const axios = inject('axios');
 
     // 在组建中使用必须获取所有实例注册到全局组件中
@@ -113,7 +119,7 @@ export default {
 
     // 提交事件
     const onSubmit = (values) => {
-      console.log('submit', values);
+
       if (values.msg == ''){
         Toast.fail('不允许发送空消息！');
       } else {
@@ -127,31 +133,31 @@ export default {
     };
 
     const onLoad = () => {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
+
       setTimeout(() => {
 
-        // list.value.push({"left": true, "m": "欢迎使用在线聊天"});
         // 加载状态结束
         loading.value = false;
 
         // 数据全部加载完成
         finished.value = true;
 
-        // 获取聊天详情
-        axios.post('/user/get_chat_info', route.query).then(resp => {
+        // 获取聊天信息
+        axios.post('/user/get_chat_info', {'chat_id': route.query.chat_id}).then(resp => {
           if (resp.data.code == 200){
 
             // 将需要的信息赋值
+            uid = resp.data.data[0].uid;
             chat_id = route.query.chat_id;
-            send_user = resp.data.data[0].send_user_account;
-            to_user = resp.data.data[0].accept_user_account;
-            send_user_avatar = imgUrl.imgUrl + resp.data.data[0].send_user_avatar;
-            accept_user_avatar = imgUrl.imgUrl + resp.data.data[0].accept_user_avatar;
+            send_user = resp.data.data[0].send_user_id;
+            accept_user = resp.data.data[0].accept_user_id;
+            send_user_avatar = resp.data.data[0].send_user_avatar;
+            accept_user_avatar = resp.data.data[0].accept_user_avatar;
+            send_user_account = resp.data.data[0].send_user_account;
+            accept_user_account = resp.data.data[0].accept_user_account;
 
           }else if (resp.data.code == -5){
             Toast.fail(resp.data.msg);
-            // 重定向到登录
             this.redirect_login();
           }
         }).catch(err => {
@@ -159,24 +165,48 @@ export default {
             console.log(err);
         });
 
-        wss.proxy.$socket.sendObj({'open_page': true, 'send_user': send_user});
-        // 获取服务器返回的数据
-        wss.proxy.$socket.onmessage = (res) => {
-          console.log(res.data)
-          if (res.data) {
-            let msg_list = JSON.parse(res.data)
+        // 获取聊天内容
+        axios.post('/user/get_msg_info', {'chat_id': route.query.chat_id}).then(resp => {
+          if (resp.data.code == 200){
+            let msg_list = resp.data.data
             for (let index = 0; index < msg_list.length; index++) {
-              // const element = array[index];
-              list.value.push({"left": true, "m": msg_list[index].msg});
-            }
+
+                if (msg_list[index].bind_user_uid != uid){
+                  let p_data = {"left": true, "m": msg_list[index].msg_content, "bind_user_avatar": msg_list[index].bind_user_avatar, "bind_user_uid": msg_list[index].bind_user_uid}
+                  list.value.push(p_data);
+                }
+                else{
+                  let p_data = {"left": false, "m": msg_list[index].msg_content, "bind_user_avatar": msg_list[index].bind_user_avatar, "bind_user_uid": msg_list[index].bind_user_uid}
+                  list.value.push(p_data);
+                }
+
+              }
+          }else if (resp.data.code == -5){
+            Toast.fail(resp.data.msg);
+            this.redirect_login();
           }
-        }
+        }).catch(err => {
+            Toast.fail('发生错误!');
+            console.log(err);
+        });
+
       }, 1000);
     };
 
     const postData = (values) => {
+
+        if (accept_user == uid) {
+          to_user_account = send_user_account
+          post_user_avatar = accept_user_avatar
+        }else{
+          
+          to_user_account = accept_user_account
+          post_user_avatar = send_user_avatar
+        }
+
         // 发送数据到服务器
-        wss.proxy.$socket.sendObj({'msg': values, 'to_user': to_user, 'send_user': send_user, 'chat_id': chat_id});
+        let post_msg = {'msg': values, 'to_user_account': to_user_account, 'post_user_avatar': post_user_avatar, 'uid': uid, 'chat_id': chat_id}
+        wss.proxy.$socket.sendObj(post_msg);
 
         // 获取服务器返回的数据
         wss.proxy.$socket.onmessage = (res) => {
@@ -185,15 +215,16 @@ export default {
               let msg_list = JSON.parse(res.data)
               for (let index = 0; index < msg_list.length; index++) {
                 // const element = array[index];
-                list.value.push({"left": true, "m": msg_list[index].msg});
+                list.value.push({"left": true, "m": msg_list[index].msg, "bind_user_uid": msg_list[index].bind_user_uid, "bind_user_avatar": msg_list[index].bind_user_avatar});
               }
             }
         }
+        
     }
 
     // 页面关闭的时候发送关闭链接
     window.onunload=function(){
-      wss.proxy.$socket.sendObj({'exit_page': true, 'send_user': send_user});
+      wss.proxy.$socket.sendObj({'exit_page': true, 'send_user': send_user_account});
     };
 
 
@@ -208,9 +239,14 @@ export default {
       postData,
       chat_id,
       send_user,
-      to_user,
+      accept_user,
+      send_user_account,
+      accept_user_account,
+      to_user_account,
+      post_user_avatar,
       send_user_avatar,
       accept_user_avatar,
+      uid,
       imgUrl,
       axios
     };

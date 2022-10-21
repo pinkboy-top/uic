@@ -13,13 +13,27 @@
         <div class="tip">
           <span>消息列表</span>
         </div>
-        <div class="item" v-for="item in list" :key="item.chat_id" @click="onTochat(item.chat_id)">
-          <img class="face" :src="imgUrl.imgUrl + item.accept_user_avatar">
-          <div class="des">
-            <div class="nickName"><span>{{item.accept_user_nick_name}}</span></div>
-            <div class="signature"><span>{{item.accept_user_account}}</span></div>
+
+        <div v-for="item in list" :key="item.chat_id" @click="onTochat(item.chat_id)">
+
+          <div class="item" v-if="item.uid == item.send_user_id">
+            <img class="face" :src="imgUrl.imgUrl + item.accept_user_avatar">
+            <div class="des">
+              <div class="nickName"><span>{{item.accept_user_nick_name}}</span></div>
+              <div class="signature"><span>{{item.accept_user_account}}</span></div>
+            </div>
           </div>
+
+          <div class="item" v-if="item.uid == item.accept_user_id">
+            <img class="face" :src="imgUrl.imgUrl + item.send_user_avatar">
+            <div class="des">
+              <div class="nickName"><span>{{item.send_user_nick_name}}</span></div>
+              <div class="signature"><span>{{item.send_user_account}}</span></div>
+            </div>
+          </div>
+
         </div>
+        
 
         <Tabbar/>
   </div>
@@ -81,23 +95,6 @@ export default {
             Toast.fail('发生错误!');
             console.log(err);
     });
-    // 获取好友请求
-    // this.axios.post('user/get_friend_request')
-    //   .then(resp => {
-    //         if (resp.data.code == 200){
-    //             this.msg = resp.data.msg
-    //         } else if (resp.data.code == -10){
-    //             // Toast.fail(resp.data.msg);
-    //             this.msg = false
-    //         } else if (resp.data.code == -5){
-    //             Toast.fail(resp.data.msg);
-    //             // 重定向到登录
-    //             this.redirect_login();
-    //         }
-    //   }).catch(err => {
-    //       Toast.fail('发生错误!');
-    //       console.log(err);
-    // });
     }
 }
 </script>
