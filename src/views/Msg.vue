@@ -16,8 +16,7 @@
             <!-- Left -->
             <div class="sender">
               <div>
-                <img style="width:4rm; height:4rm; border-radius:50%;" :src="accept_user_avatar" v-if="item.bind_user_uid ==uid">
-                <img style="width:4rm; height:4rm; border-radius:50%;" :src="send_user_avatar" v-if="item.bind_user_uid == uid">
+                <img style="width:4rm; height:4rm; border-radius:50%;" :src="imgUrl.imgUrl + item.bind_user_avatar">
               </div>
             <div>
               <div class="left_triangle"></div>
@@ -30,8 +29,6 @@
             <!-- Right -->
             <div class="receiver">
             <div>
-                <img style="width:4rm; height:4rm; border-radius:50%;" :src="item.bind_user_avatar" v-if="item.bind_user_uid ==uid">
-                <img style="width:4rm; height:4rm; border-radius:50%;" :src="item.bind_user_avatar" v-if="item.bind_user_uid == uid">
                 <img style="width:4rm; height:4rm; border-radius:50%;" :src="imgUrl.imgUrl + item.bind_user_avatar">
             </div>
             <div>
@@ -102,6 +99,7 @@ export default {
     let post_user_avatar = ref('');
     let send_user_avatar = ref('');
     let accept_user_avatar = ref('');
+    let exit_user = ref('');
     let chat_id = ref('');
     let uid = ref('');
     const axios = inject('axios');
@@ -109,21 +107,14 @@ export default {
     // 在组建中使用必须获取所有实例注册到全局组件中
     const wss = getCurrentInstance();
 
-    // 获取页面高度函数
-    const getScroll = () => {
-      return {
-        top: window.pageYOffset || document.body.scrollTop || document.documentElement.scrollTop  || 0,
-        left: window.pageXOffset || document.body.scrollLeft || document.documentElement.scrollLeft || 0
-      }
-    }
-
     // 提交事件
     const onSubmit = (values) => {
 
       if (values.msg == ''){
         Toast.fail('不允许发送空消息！');
       } else {
-        list.value.push({"left": false, "m": values.msg});
+
+        list.value.push({"left": false, "m": values.msg, "bind_user_avatar": post_user_avatar});
         postData(values.msg);
         // 清空输入框
         msg.value = '';
@@ -179,8 +170,9 @@ export default {
                   let p_data = {"left": false, "m": msg_list[index].msg_content, "bind_user_avatar": msg_list[index].bind_user_avatar, "bind_user_uid": msg_list[index].bind_user_uid}
                   list.value.push(p_data);
                 }
-
-              }
+            }
+            
+            document.documentElement.scrollTop = document.documentElement.scrollHeight;
           }else if (resp.data.code == -5){
             Toast.fail(resp.data.msg);
             this.redirect_login();
@@ -192,6 +184,19 @@ export default {
 
       }, 1000);
     };
+
+    // 获取服务器返回的数据
+    wss.proxy.$socket.onmessage = (res) => {
+
+        if (res.data) {
+          let msg_list = JSON.parse(res.data)
+          for (let index = 0; index < msg_list.length; index++) {
+            // const element = array[index];
+            list.value.push({"left": true, "m": msg_list[index].msg, "bind_user_uid": msg_list[index].bind_user_uid, "bind_user_avatar": msg_list[index].bind_user_avatar});
+          }
+          document.documentElement.scrollTop = document.documentElement.scrollHeight;
+        }
+    }
 
     const postData = (values) => {
 
@@ -210,13 +215,14 @@ export default {
 
         // 获取服务器返回的数据
         wss.proxy.$socket.onmessage = (res) => {
-            console.log(res.data)
+
             if (res.data) {
               let msg_list = JSON.parse(res.data)
               for (let index = 0; index < msg_list.length; index++) {
                 // const element = array[index];
                 list.value.push({"left": true, "m": msg_list[index].msg, "bind_user_uid": msg_list[index].bind_user_uid, "bind_user_avatar": msg_list[index].bind_user_avatar});
               }
+              document.documentElement.scrollTop = document.documentElement.scrollHeight;
             }
         }
         
@@ -224,7 +230,13 @@ export default {
 
     // 页面关闭的时候发送关闭链接
     window.onunload=function(){
-      wss.proxy.$socket.sendObj({'exit_page': true, 'send_user': send_user_account});
+      if (accept_user == uid) {
+          exit_user = accept_user_account
+        }else{
+          
+          exit_user = send_user_account
+      }
+      wss.proxy.$socket.sendObj({'exit_page': true, 'send_user': exit_user});
     };
 
 
