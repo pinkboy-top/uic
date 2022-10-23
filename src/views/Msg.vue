@@ -123,6 +123,23 @@ export default {
       }
     };
 
+    // 获取服务器返回的数据
+    wss.proxy.$socket.onmessage = (res) => {
+
+      console.log("接收到信息了");
+      if (res.data) {
+        let msg_list = JSON.parse(res.data);
+        for (let index = 0; index < msg_list.length; index++) {
+
+          if (msg_list[index].flag == 'online') {
+            break
+          }
+          list.value.push({"left": true, "m": msg_list[index].msg, "bind_user_uid": msg_list[index].bind_user_uid, "bind_user_avatar": msg_list[index].bind_user_avatar});
+        }
+        document.documentElement.scrollTop = document.documentElement.scrollHeight;
+      }
+    }
+
     const onLoad = () => {
 
       setTimeout(() => {
@@ -147,9 +164,14 @@ export default {
             send_user_account = resp.data.data[0].send_user_account;
             accept_user_account = resp.data.data[0].accept_user_account;
 
+            if (accept_user == uid) {
+              post_user_avatar = accept_user_avatar
+            } else{
+              post_user_avatar = send_user_avatar
+            }
+
           }else if (resp.data.code == -5){
             Toast.fail(resp.data.msg);
-            this.redirect_login();
           }
         }).catch(err => {
             Toast.fail('发生错误!');
@@ -159,23 +181,21 @@ export default {
         // 获取聊天内容
         axios.post('/user/get_msg_info', {'chat_id': route.query.chat_id}).then(resp => {
           if (resp.data.code == 200){
-            let msg_list = resp.data.data
+            let msg_list = resp.data.data;
             for (let index = 0; index < msg_list.length; index++) {
 
                 if (msg_list[index].bind_user_uid != uid){
-                  let p_data = {"left": true, "m": msg_list[index].msg_content, "bind_user_avatar": msg_list[index].bind_user_avatar, "bind_user_uid": msg_list[index].bind_user_uid}
+                  let p_data = {"left": true, "m": msg_list[index].msg_content, "bind_user_avatar": msg_list[index].bind_user_avatar, "bind_user_uid": msg_list[index].bind_user_uid};
                   list.value.push(p_data);
                 }
                 else{
-                  let p_data = {"left": false, "m": msg_list[index].msg_content, "bind_user_avatar": msg_list[index].bind_user_avatar, "bind_user_uid": msg_list[index].bind_user_uid}
+                  let p_data = {"left": false, "m": msg_list[index].msg_content, "bind_user_avatar": msg_list[index].bind_user_avatar, "bind_user_uid": msg_list[index].bind_user_uid};
                   list.value.push(p_data);
                 }
             }
             
-            document.documentElement.scrollTop = document.documentElement.scrollHeight;
           }else if (resp.data.code == -5){
             Toast.fail(resp.data.msg);
-            this.redirect_login();
           }
         }).catch(err => {
             Toast.fail('发生错误!');
@@ -185,18 +205,6 @@ export default {
       }, 1000);
     };
 
-    // 获取服务器返回的数据
-    wss.proxy.$socket.onmessage = (res) => {
-
-        if (res.data) {
-          let msg_list = JSON.parse(res.data)
-          for (let index = 0; index < msg_list.length; index++) {
-            // const element = array[index];
-            list.value.push({"left": true, "m": msg_list[index].msg, "bind_user_uid": msg_list[index].bind_user_uid, "bind_user_avatar": msg_list[index].bind_user_avatar});
-          }
-          document.documentElement.scrollTop = document.documentElement.scrollHeight;
-        }
-    }
 
     const postData = (values) => {
 
@@ -212,28 +220,15 @@ export default {
         // 发送数据到服务器
         let post_msg = {'msg': values, 'to_user_account': to_user_account, 'post_user_avatar': post_user_avatar, 'uid': uid, 'chat_id': chat_id}
         wss.proxy.$socket.sendObj(post_msg);
-
-        // 获取服务器返回的数据
-        wss.proxy.$socket.onmessage = (res) => {
-
-            if (res.data) {
-              let msg_list = JSON.parse(res.data)
-              for (let index = 0; index < msg_list.length; index++) {
-                // const element = array[index];
-                list.value.push({"left": true, "m": msg_list[index].msg, "bind_user_uid": msg_list[index].bind_user_uid, "bind_user_avatar": msg_list[index].bind_user_avatar});
-              }
-              document.documentElement.scrollTop = document.documentElement.scrollHeight;
-            }
-        }
-        
     }
 
     // 页面关闭的时候发送关闭链接
     window.onunload=function(){
       if (accept_user == uid) {
+
           exit_user = accept_user_account
-        }else{
-          
+
+      }else{
           exit_user = send_user_account
       }
       wss.proxy.$socket.sendObj({'exit_page': true, 'send_user': exit_user});

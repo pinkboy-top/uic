@@ -40,7 +40,7 @@ if (localStorage.token) {
       // 尝试重连的次数
       reconnectionAttempts: 5,
       // 重连间隔时间
-      reconnectionDelay: 3000
+      reconnectionDelay: 5000
     });
 }
 
