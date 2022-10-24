@@ -10,7 +10,7 @@
         <div class="tip">
           <span>好友列表</span>
         </div>
-        <div class="item" v-for="item in list" :key="item.uid">
+        <div class="item" v-for="item in list" :key="item.uid" @click="onTo_friend_info(item.uid)">
           <img class="face" :src="imgUrl.imgUrl + item.avatar">
           <div class="des">
             <div class="nickName"><span>{{item.nick_name}}</span></div>
@@ -50,6 +50,16 @@ export default {
           msg: false,
           imgUrl
       }
+  },
+
+  methods: {
+
+
+    onTo_friend_info(fid) {
+      console.log(fid);
+      // Toast(fid);
+      this.$router.push('/friendinfo/?fid=' + fid);
+    }
   },
 
   // 获取好友列表和好友请求

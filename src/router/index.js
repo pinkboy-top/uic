@@ -49,6 +49,17 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Friend.vue'),
     meta: {
       title: "好友中心",
+      content: '好友页面',
+      requireAuth: true
+    }
+  },
+  {
+    path: '/friendinfo',
+    name: 'FriendInfo',
+
+    component: () => import(/* webpackChunkName: "about" */ '../views/FriendInfo.vue'),
+    meta: {
+      title: "好友详情",
       content: '好友详情页面',
       requireAuth: true
     }
