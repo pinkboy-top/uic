@@ -1,5 +1,18 @@
 # uic
 
+# 最终效果
+![](https://github.com/pinkboy-top/uis/blob/master/news.gif)
+
+
+# 后端地址
+```
+https://github.com/pinkboy-top/uis
+```
+
+## 包含功能
+```
+注册，登录，添加好友，发送动态，在线聊天
+```
 ## 安装项目依赖
 ```
 npm install
